@@ -46,6 +46,11 @@ TRIAL_PERIOD_FOR_USER_CALLBACK = getattr(
     "PAYMENTS_TRIAL_PERIOD_FOR_USER_CALLBACK",
     None
 )
+SKIP_EMAIL = getattr(
+    settings,
+    "SKIP_EMAIL",
+    False
+)
 if isinstance(TRIAL_PERIOD_FOR_USER_CALLBACK, basestring):
     TRIAL_PERIOD_FOR_USER_CALLBACK = load_path_attr(
         TRIAL_PERIOD_FOR_USER_CALLBACK

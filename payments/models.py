@@ -497,7 +497,8 @@ class Customer(StripeObject):
             description=description,
         )
         obj = self.record_charge(resp["id"])
-        obj.send_receipt()
+        if not settings.SKIP_EMAIL:
+            obj.send_receipt()
     
     def record_charge(self, charge_id):
         data = stripe.Charge.retrieve(charge_id)
