@@ -471,7 +471,11 @@ class Customer(StripeObject):
         )
     
     def subscribe(self, plan, quantity=1, trial_days=None,
-                  charge_immediately=True):
+                  charge_immediately=False):
+        """It seems update_subscription results in an invoice being created and paid.
+        That makes calling send_invoice seem unnecessary. Therefore, I am changing 
+        charge_immediately to default to False.
+        """
         cu = self.stripe_customer
         if trial_days:
             resp = cu.update_subscription(
@@ -484,7 +488,7 @@ class Customer(StripeObject):
                 plan=PAYMENTS_PLANS[plan]["stripe_plan_id"],
                 quantity=quantity
             )
-        self.sync_current_subscription()
+        self.sync_current_subscription(cu)
         if charge_immediately:
             self.send_invoice()
         subscription_made.send(sender=self, plan=plan, stripe_response=resp)
