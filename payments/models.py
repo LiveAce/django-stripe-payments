@@ -413,7 +413,8 @@ class Customer(StripeObject):
     def sync_invoices(self, cu=None):
         cu = cu or self.stripe_customer
         for invoice in cu.invoices().data:
-            Invoice.sync_from_stripe_data(invoice, send_receipt=False)
+            # switched send_receipt to True because we want that.
+            Invoice.sync_from_stripe_data(invoice, send_receipt=True)
     
     def sync_charges(self, cu=None):
         cu = cu or self.stripe_customer
@@ -489,6 +490,8 @@ class Customer(StripeObject):
                 quantity=quantity
             )
         self.sync_current_subscription(cu)
+        # Also sync invoices, and email receipts in the process
+        self.sync_invoices(cu)
         if charge_immediately:
             self.send_invoice()
         subscription_made.send(sender=self, plan=plan, stripe_response=resp)
