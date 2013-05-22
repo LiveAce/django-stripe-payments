@@ -724,6 +724,9 @@ class Charge(StripeObject):
     receipt_sent = models.BooleanField(default=False)
     
     def send_receipt(self):
+        """ For LiveAce we email no receipts! """
+        return
+
         if not self.receipt_sent:
             site = Site.objects.get_current()
             subject = render_to_string(
