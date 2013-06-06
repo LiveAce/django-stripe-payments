@@ -472,7 +472,7 @@ class Customer(StripeObject):
         )
     
     def subscribe(self, plan, quantity=1, trial_days=None,
-                  charge_immediately=False):
+                  charge_immediately=False, coupon=None):
         """It seems update_subscription results in an invoice being created and paid.
         That makes calling send_invoice seem unnecessary. Therefore, I am changing 
         charge_immediately to default to False.
@@ -482,12 +482,14 @@ class Customer(StripeObject):
             resp = cu.update_subscription(
                 plan=PAYMENTS_PLANS[plan]["stripe_plan_id"],
                 trial_end=timezone.now() + datetime.timedelta(days=trial_days),
-                quantity=quantity
+                quantity=quantity,
+                coupon=coupon
             )
         else:
             resp = cu.update_subscription(
                 plan=PAYMENTS_PLANS[plan]["stripe_plan_id"],
-                quantity=quantity
+                quantity=quantity,
+                coupon=coupon
             )
         self.sync_current_subscription(cu)
         # Also sync invoices, and email receipts in the process
